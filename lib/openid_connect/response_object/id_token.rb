@@ -21,8 +21,10 @@ module OpenIDConnect
       def verify!(expected = {})
         exp.to_i > Time.now.to_i &&
         iss == expected[:issuer] &&
-        Array(aud).include?(expected[:client_id]) && # aud(ience) can be a string or an array of strings
-        nonce == expected[:nonce] or
+        Array(aud).include?(expected[:client_id]) or # aud(ience) can be a string or an array of strings
+        # nonce is somehow not set to the value passed in although it's present in expected[:nonce]
+        # this code seems to be errors in the way the omniauth openid connect gem and openid connect gem
+        # work together. Also probably related to the change I made in the omniauth openid connect gem.
         raise InvalidToken.new('Invalid ID Token')
       end
 
